@@ -1,0 +1,315 @@
+#!/bin/bash
+#  CS 302, assignment #10 test script.
+
+# ---------------------------------------------------------
+#  Initial checks.
+#	Ensure executable file exists.
+#	Verify availability of testing support files.
+
+if [ -z $1 ]; then
+	echo "Error, must provide executable file name."
+	exit
+fi
+
+if [ ! -e $1 ] || [ ! -x $1 ]; then
+	echo "Error, unable to find $1 executable file."
+	exit
+fi
+
+if [ ! -e graph1.txt ]; then
+	echo "Error, unable to find verification files."
+	exit
+fi
+
+# ---------------------------------------------------------
+# Define script variables and function
+
+bolded=`tput bold`
+normal=`tput sgr0`
+
+pause() {
+	if [ "$1" = "skip" ]; then
+		echo
+	else
+		echo
+		echo -n "Press return to continue"
+		read
+		clear
+	fi
+}
+
+# ---------------------------------------------------------
+#  Begin testing...
+#
+clear
+echo "${bolded}CS 302 Assignment #10 Test Script${normal}"
+echo
+#
+# ---------------------------------------------------------
+# skip command line arguments tests...
+#
+if [ ! "$2" == "ex" ]; then
+#
+clear
+echo -e "\n**********************************************************************"
+echo "Tests for program line argument tests."
+echo
+# -----
+# Initial checks for usage message and argument counts
+echo "-------------------------------"
+echo "Initial checks for usage message and argument counts"
+echo
+#
+echo
+echo "${bolded}Test -> should show usage message${normal}"
+echo "./"$1""
+./$1
+#
+echo
+echo
+echo "${bolded}Test -> should show invalid command line options.${normal}"
+echo "./"$1" -none"
+./$1 -none
+#
+echo
+echo "${bolded}Test -> should show invalid command line options.${normal}"
+echo "./"$1" -gf graph.txt -sn 0 -dn 5 -sm -extra"
+./$1 -gf graph.txt -sn 0 -dn 5 -sm -extra
+#
+#
+echo
+echo
+echo
+pause $2
+#
+echo
+echo -e "\n**********************************************************************"
+echo "Tests argument specifiers."
+echo
+echo "${bolded}Test -> should show Error, invalid graph file specifier.${normal}"
+echo "${bolded}./$1 -g graph1.txt -sn 0 -dn 5 -sm${normal}"
+./$1 -g graph1.txt -sn 0 -dn 5 -sm
+#
+echo
+echo "${bolded}Test -> should show Error, invalid graph file specifier.${normal}"
+echo "${bolded}./$1 gf graph1.txt -sn 0 -dn 5 -sm${normal}"
+./$1 gf graph1.txt -sn 0 -dn 5 -sm
+#
+echo
+echo "${bolded}Test -> should show Error, invalid ssource node specifier.${normal}"
+echo "${bolded}./$1 -gf graph1.txt -s 0 -dn 5${normal}"
+./$1 -gf graph1.txt -s 0 -dn 5
+#
+echo
+echo "${bolded}Test -> should show Error, invalid destination node specifier.${normal}"
+echo "${bolded}./$1 -gf graph1.txt -sn 0 dn 5 -sm${normal}"
+./$1 -gf graph1.txt -sn 0 dn 5 -sm
+#
+echo
+echo "${bolded}Test -> should show Error, invalid show matrix specifier.${normal}"
+echo "${bolded}./$1 -gf graph1.txt -sn 0 -dn 5 -s${normal}"
+./$1 -gf graph1.txt -sn 0 -dn 5 -s
+#
+pause $2
+#
+echo
+echo -e "\n**********************************************************************"
+echo "Tests argument values."
+#
+echo
+echo "${bolded}Test -> should show Error, invalid source node value.${normal}"
+echo "${bolded}./$1 -gf graph1.txt -sn -1 -dn 5 -sm${normal}"
+./$1 -gf graph1.txt -sn -1 -dn 5 -sm
+#
+echo
+echo "${bolded}Test -> should show Error, invalid source node value.${normal}"
+echo "${bolded}./$1 -gf graph1.txt -sn 1a -dn 5${normal}"
+./$1 -gf graph1.txt -sn 1a -dn 5
+#
+echo
+echo "${bolded}Test -> should show Error, invalid destination node value.${normal}"
+echo "${bolded}./$1 -gf graph1.txt -sn 0 -dn a5 -sm${normal}"
+./$1 -gf graph1.txt -sn 0 -dn a5 -sm
+#
+echo
+echo "${bolded}Test -> should show Error, invalid destination node value.${normal}"
+echo "${bolded}./$1 -gf graph1.txt -sn 0 -dn -5 -sm${normal}"
+./$1 -gf graph1.txt -sn 0 -dn -5 -sm
+#
+echo
+echo "${bolded}Test -> should show Error, start node and destination should not be the same${normal}"
+echo "${bolded}./$1 -gf graph1.txt -sn 1 -dn 1 -sm${normal}"
+./$1 -gf graph1.txt -sn 1 -dn 1 -sm
+#
+pause $2
+#
+fi
+#
+# ---------------------------------------------------------
+#  Basic tests
+#
+echo
+echo "${bolded}Basic Error Testing...${normal}"
+echo
+#
+echo ./$1 -t  >testOut.txt
+./$1 -t > testOut.txt
+
+if `diff testOut.txt mstrTest.txt >/dev/null` ; then
+	echo "Graph Object, Error Testing Successful"
+else
+	diff testOut.txt mstrTest.txt
+fi
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+#
+pause
+# -----
+#
+echo
+echo "${bolded}Execution Testing...${normal}"
+echo
+#
+# -----
+#
+echo "./"$1" -gf graph1.txt -sn 0 -dn 5 -sm >tmp1.txt"
+./$1 -gf graph1.txt -sn 0 -dn 5 -sm >tmp1.txt
+
+if `diff tmp1.txt mstr1.txt >/dev/null`; then
+	echo "Test #1 Successful"
+else
+	diff tmp1.txt mstr1.txt
+fi
+echo
+#
+# -----
+#
+echo "./"$1" -gf graph2.txt -sn 0 -dn 5 -sm >tmp2.txt"
+./$1 -gf graph2.txt -sn 0 -dn 5 -sm >tmp2.txt
+
+if `diff tmp2.txt mstr2.txt >/dev/null`; then
+	echo "Test #2 Successful"
+else
+	diff tmp2.txt mstr2.txt
+fi
+echo
+#
+# -----
+#
+echo "./"$1" -gf graph3.txt -sn 0 -dn 9 -sm >tmp3.txt"
+./$1 -gf graph3.txt -sn 0 -dn 9 -sm >tmp3.txt
+
+if `diff tmp3.txt mstr3.txt >/dev/null`; then
+	echo "Test #3 Successful"
+else
+	diff tmp3.txt mstr3.txt
+fi
+echo
+#
+# -----
+#
+echo "./"$1" -gf graph4.txt -sn 0 -dn 49 -sm >tmp4.txt"
+./$1 -gf graph4.txt -sn 0 -dn 49 -sm >tmp4.txt
+
+if `diff tmp4.txt mstr4.txt >/dev/null`; then
+	echo "Test #4 Successful"
+else
+	diff tmp4.txt mstr4.txt
+fi
+echo
+#
+# -----
+#
+echo
+pause
+echo
+echo
+#
+# -----
+#
+echo "./"$1" -gf graph5.txt -sn 0 -dn 49 -sm >tmp5.txt"
+./$1 -gf graph5.txt -sn 0 -dn 49 -sm >tmp5.txt
+
+if `diff tmp5.txt mstr5.txt >/dev/null`; then
+	echo "Test #5 Successful"
+else
+	diff tmp5.txt mstr5.txt
+fi
+echo
+#
+# -----
+#
+echo "./"$1" -gf graph6.txt -sn 0 -dn 310 -sm >tmp6.txt"
+./$1 -gf graph6.txt -sn 0 -dn 310 -sm >tmp6.txt
+
+if `diff tmp6.txt mstr6.txt >/dev/null`; then
+	echo "Test #6 Successful"
+else
+	diff tmp6.txt mstr6.txt
+fi
+echo
+#
+# -----
+#
+echo "./"$1" -gf graph7.txt -sn 0 -dn 319 -sm >tmp7.txt"
+./$1 -gf graph7.txt -sn 0 -dn 319 -sm >tmp7.txt
+
+if `diff tmp7.txt mstr7.txt >/dev/null`; then
+	echo "Test #7 Successful"
+else
+	diff tmp7.txt mstr7.txt
+fi
+echo
+#
+# -----
+#
+echo "./"$1" -gf graph8.txt -sn 0 -dn 1524 -sm >tmp8.txt"
+./$1 -gf graph8.txt -sn 0 -dn 1524 -sm >tmp8.txt
+
+if `diff tmp8.txt mstr8.txt >/dev/null`; then
+	echo "Test #8 Successful"
+else
+	diff tmp8.txt mstr8.txt
+fi
+echo
+#
+# -----
+#
+echo "./"$1" -gf graph9.txt -sn 0 -dn 10444 -sm >tmp9.txt"
+./$1 -gf graph9.txt -sn 0 -dn 10444 -sm >tmp9.txt
+
+if `diff tmp9.txt mstr9.txt >/dev/null`; then
+	echo "Test #9 Successful"
+else
+	diff tmp9.txt mstr9.txt
+fi
+echo
+#
+# -----
+#  Final test with valgrind
+#
+pause $2
+#
+echo -e "\n**********************************************************************"
+echo "Final test - check for memory leaks."
+echo
+echo "   Should show: \"All heap blocks were freed -- no leaks are possible\""
+echo
+echo
+#
+echo "valgrind ./"$1" -gf graph8.txt -sn 0 -dn 1524 -sm >tmp8.txt"
+valgrind ./$1 -gf graph8.txt -sn 0 -dn 1524 -sm >tmp8.txt
+
+#
+echo
+#
+# ---------------------------------------------------------
+#  Done, end script
+#
+echo "Test Script Done."
+
