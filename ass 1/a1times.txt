@@ -1,0 +1,26 @@
+Executions Times for the maximal matrix sum path problem.
+
+
+Executions for the maximal matrix sum path problem.
+
+
+
+============================================================
+
+Error, invalid order value.
+
+real	0m0.006s
+user	0m0.001s
+sys	0m0.002s
+
+
+Error, invalid order value.
+
+real	0m0.003s
+user	0m0.001s
+sys	0m0.001s
+
+
+
+-----------------------------------------
+

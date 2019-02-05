@@ -1,0 +1,42 @@
+#!/bin/bash
+# CS 302, assignment #4 script.
+
+# ---------------------------------------------------------
+# Initial checks.
+#	Ensure parameters are provided and input files exists.
+
+if [ -z $1 ] && [ -z $2 ]; then
+	echo "Usgae: /.rev <inputFileName>  <outputFileName>"
+	exit
+fi
+
+if [ -z $1 ]; then
+	echo "Error, must provide input file name."
+	exit
+fi
+
+if [ -z $2 ]; then
+	echo "Error, must provide output file name."
+	exit
+fi
+
+if [ ! -e $1 ]; then
+	echo "Error, unable to find $1 input file."
+	exit
+fi
+
+# ---------------------------------------------------------
+# Convert input file to data file.
+
+inFile=$1
+inFileName=${inFile%.*}
+outFile=$2
+outFileName=${outFile%.*}
+
+sox -G $1 $inFileName.dat
+./reverse $inFileName.dat $outFileName.dat
+sox -G $outFileName.dat $outFileName.ogg
+
+#rm $inFileName.dat
+rm $outFileName.dat
+
